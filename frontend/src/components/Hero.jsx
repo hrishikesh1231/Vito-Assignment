@@ -14,7 +14,7 @@ function Hero() {
   const navigate = useNavigate();
 
 const handleDashboardAccess = () => {
-  if (password === "vito123") {
+  if (password === "vitto123") {
     setShowModal(false);
     setPassword("");
 
@@ -178,7 +178,7 @@ const handleDashboardAccess = () => {
                     <span className="font-semibold">
                     Demo Password:
                     </span>{" "}
-                    <b>vito123</b>
+                    <b>vitto123</b>
                 </p>
                 </div>
             </div>
