@@ -12,18 +12,12 @@ const createApplication = async (req, res) => {
 
     const query = `
       INSERT INTO applications
-      (name,mobile,amount,purpose,language)
-      VALUES($1,$2,$3,$4,$5)
+      (name, mobile, amount, purpose, language)
+      VALUES ($1, $2, $3, $4, $5)
       RETURNING *;
     `;
 
-    const values = [
-      name,
-      mobile,
-      amount,
-      purpose,
-      language,
-    ];
+    const values = [name, mobile, amount, purpose, language];
 
     const result = await pool.query(query, values);
 
@@ -33,7 +27,7 @@ const createApplication = async (req, res) => {
     });
 
   } catch (error) {
-    console.log(error);
+    console.error(error);
 
     res.status(500).json({
       success: false,
@@ -67,6 +61,7 @@ const getApplications = async (req, res) => {
     });
   }
 };
+
 const updateApplicationStatus = async (req, res) => {
   try {
     const { id } = req.params;
@@ -105,15 +100,15 @@ const updateApplicationStatus = async (req, res) => {
     });
   }
 };
+
 const getSummary = async (req, res) => {
   try {
-
     const totalApps = await pool.query(
       "SELECT COUNT(*) FROM applications"
     );
 
     const totalAmount = await pool.query(
-      "SELECT COALESCE(SUM(amount),0) FROM applications"
+      "SELECT COALESCE(SUM(amount),0) AS total_amount FROM applications"
     );
 
     const pending = await pool.query(
@@ -128,19 +123,62 @@ const getSummary = async (req, res) => {
       "SELECT COUNT(*) FROM applications WHERE status='rejected'"
     );
 
-    res.json({
+    res.status(200).json({
       totalApplications: Number(totalApps.rows[0].count),
-      totalAmount: Number(totalAmount.rows[0].coalesce),
+      totalAmount: Number(totalAmount.rows[0].total_amount),
       pending: Number(pending.rows[0].count),
       approved: Number(approved.rows[0].count),
       rejected: Number(rejected.rows[0].count),
     });
 
   } catch (error) {
+    console.error("SUMMARY ERROR:", error);
+
     res.status(500).json({
       message: error.message,
     });
   }
 };
+const getApplicationById = async (
+  req,
+  res
+) => {
+  try {
+    const { id } = req.params;
 
-module.exports = { createApplication,getApplications,updateApplicationStatus,getSummary };
+    const result = await pool.query(
+      `
+      SELECT *
+      FROM applications
+      WHERE id = $1
+      `,
+      [id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Application not found",
+      });
+    }
+
+    res.status(200).json(
+      result.rows[0]
+    );
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+module.exports = {
+  createApplication,
+  getApplications,
+  updateApplicationStatus,
+  getSummary,
+  getApplicationById,
+};
