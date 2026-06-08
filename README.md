@@ -2,7 +2,7 @@
 
 ## Live Demo
 
-**Frontend:** YOUR_FRONTEND_URL
+**Frontend:** https://vitto-frontend-psi.vercel.app/
 
 **Backend API:** https://vito-assignment.onrender.com
 
