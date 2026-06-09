@@ -173,7 +173,7 @@ Backend `.env`
 ```env
 PORT=5000
 
-DATABASE_URL=postgresql://neondb_owner:npg_ugJ8IzU0SWQp@ep-purple-silence-aozgftao.c-2.ap-southeast-1.aws.neon.tech/neondb?sslmode=require
+DATABASE_URL=postgresql://neondb_owner:*********@ep-purple-silence-aozgftao.c-2.ap-southeast-1.aws.neon.tech/neondb?sslmode=require
 ```
 
 Frontend `.env`
